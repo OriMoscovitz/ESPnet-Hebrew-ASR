@@ -1,0 +1,82 @@
+# ============================================================
+# Hebrew ASR fine-tuning with XLS-R 300M
+# ============================================================
+
+# ----- Pretrained speech frontend -----
+frontend: s3prl
+frontend_conf:
+    fs: 16000
+    frontend_conf:
+        upstream: xls_r_300m
+    multilayer_feature: false
+
+# XLS-R 300M outputs 1024-dimensional representations.
+# Reduce them before the ESPnet encoder to save memory.
+preencoder: linear
+preencoder_conf:
+    input_size: 1024
+    output_size: 256
+
+# ----- ESPnet encoder -----
+encoder: transformer
+encoder_conf:
+    output_size: 256
+    attention_heads: 4
+    linear_units: 1024
+    num_blocks: 4
+    dropout_rate: 0.1
+    positional_dropout_rate: 0.1
+    attention_dropout_rate: 0.0
+    input_layer: linear
+
+# ----- Decoder -----
+decoder: transformer
+decoder_conf:
+    attention_heads: 4
+    linear_units: 1024
+    num_blocks: 2
+    dropout_rate: 0.1
+    positional_dropout_rate: 0.1
+    self_attention_dropout_rate: 0.0
+    src_attention_dropout_rate: 0.0
+
+# ----- CTC + attention hybrid ASR -----
+model_conf:
+#    ctc_weight: 0.5
+    ctc_weight: 0.3
+    lsm_weight: 0.1
+    length_normalized_loss: false
+
+# ----- Optimizer -----
+optim: adamw
+optim_conf:
+#    lr: 1.0e-5
+    lr: 5.0e-5
+    weight_decay: 0.01
+
+# ----- Training -----
+max_epoch: 30
+
+# RTX 5070 / 12 GB: start very conservatively
+batch_type: unsorted
+batch_size: 1
+valid_batch_size: 1
+accum_grad: 8
+
+# Mixed precision saves substantial GPU memory
+use_amp: true
+
+grad_clip: 5.0
+
+num_workers: 2
+log_interval: 20
+
+# Save a small number of checkpoints
+keep_nbest_models: 3
+
+# Early stopping
+patience: 7
+
+# We do not use spectrogram normalization because XLS-R receives waveform
+normalize: null
+specaug: null

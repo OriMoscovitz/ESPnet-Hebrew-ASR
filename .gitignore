@@ -1,0 +1,16 @@
+.idea/
+exp/
+download/
+espnet/
+__pycache__/
+*.pyc
+*.pth
+*.pt
+*.ckpt
+
+hebrew_campus_subset/audio/
+
+audio/
+
+.venv/
+venv/
