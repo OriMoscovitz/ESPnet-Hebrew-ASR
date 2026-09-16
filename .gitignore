@@ -1,5 +1,13 @@
 .idea/
-exp/
+exp/*
+!exp/decode_my_test_ctc/
+!exp/decode_my_test_ctc03/
+!exp/decode_my_test_ctc05/
+!exp/decode_my_test_ctc07/
+!exp/decode_my_test_ctc08/
+!exp/decode_my_test_ctc09/
+!exp/decode_my_test_att/
+!exp/decode_my_test_hybrid03_lr5e5_ctc03/
 download/
 espnet/
 __pycache__/
